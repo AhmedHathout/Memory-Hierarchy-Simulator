@@ -1,20 +1,23 @@
 package cache;
+
+import org.omg.CORBA.INITIALIZE;
+
 public class Cache{
 	
 	/**
 	 *  The total size of the cache (without the overheads)
 	 */
-	private int s;
+	private short s;
 	
 	/**
-	 * Number of bits in every line;
+	 * Number of bytes in every line;
 	 */
-	private int l;
+	private short l;
 	
 	/**
 	 *  Associativity
 	 */
-	private int m;
+	private short m;
 	
 	/**
 	 * Latency in terms of clock cycles
@@ -33,7 +36,7 @@ public class Cache{
 	 * @param m
 	 * @param latency
 	 */
-	public Cache(int s, int l, int m, int latency) {
+	public Cache(short s, byte l, short m, int latency) {
 		
 		this.s = s;
 		this.l= l;
@@ -45,11 +48,50 @@ public class Cache{
 	}
 	
 	/**
-	 * Returns i
-	 * @return i
+	 * Returns the number of lines
+	 * @return
 	 */
-	public int getNumberOfLines() {
-		return s / l;
+	public short getNumberOfLines() {
+		return (short) (s / l);
+	}
+	
+	/**
+	 * Returns the number of indices (sets)
+	 * @return
+	 */
+	public short getNumberOfIndices() {
+		return (short) (getNumberOfLines() / m);
+	}
+	
+	
+	/**
+	 * Initializes all the cache lines to be of size l
+	 */
+	public void intializeCacheLines() {
+		for(int i = 0; i < lines.length; i++) {
+			lines[i] = new CacheLine(l);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param address	The address of the data in the main memory
+	 * @return   An array of bytes of size 2 that contains the data or null if not found
+	 */
+	
+	public byte[] readData(short address) {
+		CacheAddress cacheAddress= new CacheAddress(address, getNumberOfIndices(), l);
+		
+		int index = cacheAddress.getIndex();
+		int tag = cacheAddress.getTag();
+		
+		for (int j = 0; j < m; j++) {
+			CacheLine currentLine = lines[index + j];
+			if (currentLine.tag == tag && currentLine.valid)
+				return currentLine.readData(cacheAddress.getDisplacement());
+		}
+		
+		return null;
 	}
 	
 }
