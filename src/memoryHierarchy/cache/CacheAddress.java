@@ -1,4 +1,4 @@
-package cache;
+package memoryHierarchy.cache;
 
 import misc.*;
 
@@ -22,26 +22,32 @@ public class CacheAddress {
 	/**
 	 * The address of the data in the main memory
 	 */
-	short address;
+	private short address;
 	
 	/**
-	 * 
-	 * @param address 			The address of the data in the main memory
 	 * @param numberOfIndices	The number of indices (sets)
 	 * @param l					Number of bytes in every line;
 	 */
-	CacheAddress(short address, short numberOfIndices, short l) {
-		this.address = address;
-		this.i = (byte) AdditionalMathFunctions.log2(numberOfIndices);
-		this.d = (byte) AdditionalMathFunctions.log2(l);
+	public CacheAddress(short numberOfIndices, short l) {
+		this.address = 0;
+		this.i = (byte) AdditionalMathFunctions.log2(numberOfIndices - 1);
+		this.d = (byte) AdditionalMathFunctions.log2(l - 1);
 		this.t = (byte) (16 - i - d);
+	}
+	
+	/**
+	 * the address of this cache address
+	 * @param address	The address of the word in the main memory
+	 */
+	public void setAddress(short address) {
+		this.address = address;
 	}
 	
 	/**
 	 * Returns the displacement (offset) of the required data
 	 * @return displacement
 	 */
-	short getDisplacement() {
+	public short getDisplacement() {
 		short setBits = (short) (Math.pow(2, d) - 1);
 		return (short) (address & setBits);
 	}
@@ -50,18 +56,18 @@ public class CacheAddress {
 	 * Returns the index of the set of the required data 
 	 * @return index
 	 */
-	short getIndex() {
-		short setBits = (short) ((short) (Math.pow(2, i) - 1) << d);
-		return (short) (address & setBits);
+	public short getIndex() {
+		short setBits = (short) (Math.pow(2, i) - 1);
+		return (short) ((address >> d) & setBits);
 	}
 	
 	/**
 	 * Returns the tag of the required data
 	 * @return tag
 	 */
-	short getTag() {
-		short setBits = (short) ((short) (Math.pow(2, t) - 1) << (d + i));
-		return (short) (address & setBits);
+	public short getTag() {
+		short setBits = (short) (Math.pow(2, t) - 1);
+		return (short) ((address >> (i + d)) & setBits);
 	}
 	
 }

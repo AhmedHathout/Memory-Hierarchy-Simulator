@@ -1,0 +1,59 @@
+Register File
+Register Index,Register Content
+0,0
+1,2
+2,0
+3,0
+4,0
+5,0
+6,0
+7,2
+
+Instruction Cache
+Line index,Data
+155,[0, -123]
+156,[2, -90]
+157,[-128, -100]
+158,[4, -65]
+Hits,Misses,Total number of accesses
+0,4,4
+
+Data Cache
+Line index,Data
+0,[2, 0]
+1,[2, 0]
+2,[2, 0]
+Hits,Misses,Total number of accesses
+3,3,6
+
+L2
+Line index,Data
+0,[2, 0, 2, 0]
+1,[2, 0, 0, 0]
+aa,[0, 0, 0, -123]
+ab,[2, -90, -128, -100]
+ac,[4, -65, 0, 0]
+Hits,Misses,Total number of accesses
+4,5,9
+
+Main Memory
+adress,data
+0,2
+2,2
+4,2
+1aab,-123
+1aac,2
+1aad,-90
+1aae,-128
+1aaf,-100
+1ab0,4
+1ab1,-65
+fff1,2
+fff2,10
+Number of accesses
+7
+
+Cycles spent to access memories
+220,cycles
+Number of executed instructions
+4,instructions
