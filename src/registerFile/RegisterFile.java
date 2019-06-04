@@ -5,7 +5,7 @@ public class RegisterFile {
 	/**
 	 * The number of registers in the register file
 	 */
-	private static final int NUMBER_OF_REGISTERS = 8;
+	public static final int NUMBER_OF_REGISTERS = 8;
 	
 	/**
 	 * An array of type short

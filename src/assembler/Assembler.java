@@ -331,8 +331,6 @@ public class Assembler {
 				"BEQ R5, R6, 4", 
 				"JALR R7, R0"};
 		
-		System.out.println(1 << 5);
-		
 		Assembler assembler = new Assembler(instructions, "555");
 		for (int i = 0; i < assembler.machineCode.length; i++) 
 			System.out.println(assembler.machineCode[i]);

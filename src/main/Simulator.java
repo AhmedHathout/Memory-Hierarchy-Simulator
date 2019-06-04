@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import assembler.Assembler;
 import memoryHierarchy.MemoryHierarchy;
 import misc.AdditionalMathFunctions;
+import pipelineStages.Stages;
 import registerFile.RegisterFile;
 
 public class Simulator {
@@ -22,6 +23,11 @@ public class Simulator {
 	RegisterFile registerFile;
 	
 	/**
+	 * The 4 stages
+	 */
+	Stages stages;
+	
+	/**
 	 * The number of instructions in the program that are given by the user
 	 */
 	int numberOfInstructions;
@@ -29,12 +35,17 @@ public class Simulator {
 	/**
 	 * The address of the first instruction of the program
 	 */
-	int addressOfFirstInstruction;
+	short addressOfFirstInstruction;
 	
 	/**
 	 * The number of the executed instruction in the simulation
 	 */
 	int numberOfExecutedInstructions;
+	
+	/**
+	 * The time in terms of clock cycles
+	 */
+	int totalExecutionTime;
 	
 	
 	/**
@@ -58,18 +69,23 @@ public class Simulator {
 	 */
 	Simulator(int[][] SLM, int[] latencies, String[] instructions, 
 			String startingAddress, String[] data, String[] locations, 
-			String hitWritingPolicy, String missWritingPolicy) {
+			String hitWritingPolicy, String missWritingPolicy, 
+			int[] numberOfFunctionalUnits, int numberOfROBEntries) {
 		
 		Assembler assembler = new Assembler(instructions, startingAddress);
 		this.memoryHierarchy = new MemoryHierarchy(SLM, latencies, data, 
 				locations, hitWritingPolicy, missWritingPolicy);
 		
-		this.memoryHierarchy.storeInstructionsInMainMemory(assembler);
-		this.registerFile = new RegisterFile();
-		
 		this.numberOfInstructions = instructions.length;
 		this.addressOfFirstInstruction = (short) Integer.parseInt(startingAddress, 16);
 		this.numberOfExecutedInstructions = 0;
+
+		this.memoryHierarchy.storeInstructionsInMainMemory(assembler);
+		this.registerFile = new RegisterFile();
+		this.stages = new Stages(memoryHierarchy, startingAddress, 
+				(short) numberOfInstructions, registerFile, numberOfFunctionalUnits, 
+				numberOfROBEntries);
+		
 	}
 	
 	/**
@@ -140,12 +156,32 @@ public class Simulator {
 		}
 	}
 	
+	/**
+	 * Runs the simulator of phase 2
+	 */
+	public void run() {
+		int currentCycle = 0;
+		
+		while (true) {
+			this.stages.run(currentCycle++);
+			if (stages.finished()) 
+				break;
+		}
+		
+		this.totalExecutionTime = currentCycle;
+	}
+	
 	public String toString() {
 		String numberOfExecutedInstructions = "Number of executed instructions\n" + 
-				this.numberOfExecutedInstructions + ",instructions";
+				this.numberOfExecutedInstructions + ",Instructions\n";
+		
+		String totalExecutionTime = "Total execution time\n" + this.totalExecutionTime + ",Cycles\n";
+		String IPC = "IPC\n" + this.totalExecutionTime / this.numberOfInstructions + "\n";
+		String AMAT = "AMAT\n" + memoryHierarchy.AMAT() + ",Cycles\n";
+		String statistics = totalExecutionTime + IPC + AMAT;
 		
 		return this.registerFile.toString() + "\n" + this.memoryHierarchy.toString() + 
-				"\n" + numberOfExecutedInstructions;
+				"\n" + numberOfExecutedInstructions + statistics;
 	}
 	
 	/**
@@ -179,8 +215,11 @@ public class Simulator {
 		
 		// Program instructions
 		String[] instructions = {"LW R1, R2, 0", 
+				"ADD R1, R1, R1",
+				"BEQ R0, R0, -4",
 				"SW R1, R4, 2", 
 				"LW R7, R1, 0",
+				"JALR R3, R4",
 				"SW R7, R6, 4"};
 		
 		// The address of the first instruction
@@ -198,12 +237,15 @@ public class Simulator {
 		// The writing policy if miss
 		String missWritingPolicy = "Write Allocate";
 		
+		int[] numberOfFunctionalUnits = {2, 2, 2, 2};
+		int numberOfROBEntries = 8;
+		
 		// Initializing the simulator
 		Simulator simulator = new Simulator(SLM, latencies, instructions,
-				startingAddress, data, locations, hitWritingPolicy, missWritingPolicy);
+				startingAddress, data, locations, hitWritingPolicy, 
+				missWritingPolicy, numberOfFunctionalUnits, numberOfROBEntries);
 		
-		// Executes all the instruction
-		simulator.executeAllInstructions();
+		simulator.run();
 		
 		// Writes the output to a CSV file
 		simulator.toCSV();

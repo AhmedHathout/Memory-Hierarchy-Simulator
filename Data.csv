@@ -1,7 +1,7 @@
 Register File
 Register Index,Register Content
 0,0
-1,2
+1,4
 2,0
 3,0
 4,0
@@ -12,48 +12,60 @@ Register Index,Register Content
 Instruction Cache
 Line index,Data
 155,[0, -123]
-156,[2, -90]
-157,[-128, -100]
-158,[4, -65]
+156,[-127, 4]
+157,[-4, -65]
+158,[2, -90]
+159,[-128, -100]
+15a,[0, -18]
+15b,[4, -65]
+15c,[0, 0]
 Hits,Misses,Total number of accesses
-0,4,4
+0,8,8
 
 Data Cache
 Line index,Data
 0,[2, 0]
-1,[2, 0]
-2,[2, 0]
 Hits,Misses,Total number of accesses
-3,3,6
+1,1,2
 
 L2
 Line index,Data
-0,[2, 0, 2, 0]
-1,[2, 0, 0, 0]
+0,[2, 0, 0, 0]
 aa,[0, 0, 0, -123]
-ab,[2, -90, -128, -100]
-ac,[4, -65, 0, 0]
+ab,[-127, 4, -4, -65]
+ac,[2, -90, -128, -100]
+ad,[0, -18, 4, -65]
+ae,[0, 0, 0, 0]
 Hits,Misses,Total number of accesses
-4,5,9
+3,6,9
 
 Main Memory
 adress,data
 0,2
-2,2
-4,2
 1aab,-123
-1aac,2
-1aad,-90
-1aae,-128
-1aaf,-100
-1ab0,4
-1ab1,-65
+1aac,-127
+1aad,4
+1aae,-4
+1aaf,-65
+1ab0,2
+1ab1,-90
+1ab2,-128
+1ab3,-100
+1ab5,-18
+1ab6,4
+1ab7,-65
 fff1,2
 fff2,10
 Number of accesses
-7
+6
 
 Cycles spent to access memories
-220,cycles
+195,cycles
 Number of executed instructions
-4,instructions
+0,Instructions
+Total execution time
+9,Cycles
+IPC
+1
+AMAT
+45.0,Cycles

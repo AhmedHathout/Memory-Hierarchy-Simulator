@@ -1,7 +1,6 @@
-package memoryHierarchy.cache;
+package cache;
 
 import java.util.Arrays;
-
 import misc.AdditionalMathFunctions;
 
 public class Cache{
@@ -171,8 +170,7 @@ public class Cache{
 		
 		short index = cacheAddress.getIndex();
 		short tag = cacheAddress.getTag();
-		// TODO first we should check if there is no line with that tag and 
-		//		replace and set the dirty bit if it exists.
+		
 		CacheLine requiredLine = getFirstEmptyLine(index);
 		
 		return requiredLine.writeLine(data, tag, higherLevelDisplacement);
@@ -226,14 +224,6 @@ public class Cache{
 	 */
 	public int getTotalNumberOfAccesses() {
 		return hits + misses;
-	}
-	
-	public double getRatio(int hitsOrMisses) {
-		return hitsOrMisses / getTotalNumberOfAccesses();
-	}
-	
-	public double AMAT() {
-		return getRatio(hits) * cyclesSpentToAccess();
 	}
 	
 	public String toString() {

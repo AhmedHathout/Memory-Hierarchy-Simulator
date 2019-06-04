@@ -279,6 +279,17 @@ public class MemoryHierarchy {
 		this.mainMemory.storeInstructions(assembler);
 	}
 	
+	public double AMAT() {
+		double cachesAMAT = dataCacheL1.AMAT() + instructionCacheL1.AMAT();
+		for (int i = 0; i < caches.length; i++) {
+			cachesAMAT += caches[i].AMAT();
+		}
+		
+		cachesAMAT += mainMemory.cyclesSpentToAccess();
+		cachesAMAT /= caches.length  + 3;
+		return cachesAMAT;
+	}
+	
 	public String toString() {
 		String L1Caches = "Instruction Cache\n" + this.instructionCacheL1.toString() + 
 				"\n" + "Data Cache\n" + this.dataCacheL1.toString() + "\n";

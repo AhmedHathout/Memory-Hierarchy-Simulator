@@ -1,4 +1,4 @@
-package memoryHierarchy.mainMemory;
+package mainMemory;
 
 import java.util.Arrays;
 
@@ -67,7 +67,7 @@ public class MainMemory {
 	 */
 	public byte[] load(short address, short l, short highestCacheDisplacement) {
 		this.numOfAccesses++;
-		return Arrays.copyOfRange(this.data, address - highestCacheDisplacement, address - highestCacheDisplacement + l);
+		return Arrays.copyOfRange(this.data, address - highestCacheDisplacement, address + l);
 	}
 	
 	/**

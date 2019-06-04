@@ -134,7 +134,7 @@ public class Instruction {
 	}
 	
 	public String toString() {
-		return this.opcode + " " + this.regA + " " + this.regB + " " + this.regC + " " + this.signedImmediate10 + " " + this.signedImmediate7;
+		return this.opcode + " " + this.regA + " " + this.regB + " " + this.regC + " " + this.signedImmediate7 + " " + this.signedImmediate10;
 	}
 	
 }
